@@ -505,33 +505,61 @@ elif menu == "APR vs EAR":
     st.header("🏦 Comparing Loan Rates: APR vs EAR")
 
     st.markdown("""
+## Why 12% is NOT Always 12%
+
+Banks and fintech apps advertise APR.
+
+But actual borrowing cost depends on:
+
+- compounding frequency
+- hidden charges
+- payment timing
+
+---
+
 ## Formula
 
 EAR = (1 + APR/m)^m - 1
 """)
 
+    frequency_options = {
+        "Annual": 1,
+        "Semi-Annual": 2,
+        "Quarterly": 4,
+        "Monthly": 12,
+        "Daily": 365
+    }
+
     col1, col2 = st.columns(2)
 
     with col1:
-        apr = st.number_input("APR (%)", value=12.0)
-
-    with col2:
-        m = st.selectbox(
-            "Compounding Frequency",
-            {
-                "Annual": 1,
-                "Semi-Annual": 2,
-                "Quarterly": 4,
-                "Monthly": 12,
-                "Daily": 365
-            }
+        apr = st.number_input(
+            "APR (%)",
+            value=12.0
         )
 
-    ear = ((1 + (apr/100)/m) ** m) - 1
+    with col2:
+        frequency_label = st.selectbox(
+            "Compounding Frequency",
+            list(frequency_options.keys())
+        )
 
-    st.success(f"Effective Annual Rate = {round(ear*100,2)}%")
+    m = frequency_options[frequency_label]
 
-    st.code("=EFFECT(APR,m)", language="excel")
+    ear = ((1 + (apr / 100) / m) ** m) - 1
+
+    st.success(
+        f"Effective Annual Rate (EAR) = {round(ear*100,2)}%"
+    )
+
+    st.subheader("📘 Excel Formula")
+
+    st.code(
+        "=EFFECT(APR,m)",
+        language="excel"
+    )
+
+    st.subheader("💳 Practical Loan Comparison")
 
     loanA = ((1 + 0.12/12) ** 12) - 1
     loanB = ((1 + 0.123) ** 1) - 1
@@ -547,6 +575,10 @@ EAR = (1 + APR/m)^m - 1
     })
 
     st.table(comparison)
+
+    st.info("""
+Financial products with identical APR may have different effective costs because of compounding frequency.
+""")
 
 # =========================================================
 # NPV
@@ -1105,26 +1137,141 @@ Understand emotional financial decision-making.
 
 elif menu == "Formula Cheat Sheet":
 
-    st.header("📘 TVM Formula Cheat Sheet")
+    st.header("📘 Complete TVM Formula Cheat Sheet")
 
     formulas = """
-Future Value: FV = PV(1+r)^n
+TIME VALUE OF MONEY FORMULAS
 
-Present Value: PV = FV/(1+r)^n
+---------------------------------------------------
+1. FUTURE VALUE
+---------------------------------------------------
 
-Annuity: PV = C[(1-(1+r)^-n)/r]
+FV = PV(1+r)^n
 
-Perpetuity: PV = C/r
+Excel:
+=FV(rate,nper,pmt,pv)
 
-Growing Perpetuity: PV = C1/(r-g)
+---------------------------------------------------
+2. PRESENT VALUE
+---------------------------------------------------
 
-EAR: (1+APR/m)^m -1
+PV = FV/(1+r)^n
+
+Excel:
+=PV(rate,nper,pmt,fv)
+
+---------------------------------------------------
+3. ORDINARY ANNUITY
+---------------------------------------------------
+
+PV = C[(1-(1+r)^-n)/r]
+
+Excel:
+=PV(rate,nper,pmt)
+
+---------------------------------------------------
+4. ANNUITY DUE
+---------------------------------------------------
+
+PV(AD) = PV(OA)(1+r)
+
+Excel:
+=PV(rate,nper,pmt,,1)
+
+---------------------------------------------------
+5. PERPETUITY
+---------------------------------------------------
+
+PV = C/r
+
+---------------------------------------------------
+6. GROWING PERPETUITY
+---------------------------------------------------
+
+PV = C1/(r-g)
+
+---------------------------------------------------
+7. GROWING ANNUITY
+---------------------------------------------------
+
+PV = [C/(r-g)] × [1-((1+g)/(1+r))^n]
+
+---------------------------------------------------
+8. EFFECTIVE ANNUAL RATE (EAR)
+---------------------------------------------------
+
+EAR = (1+APR/m)^m -1
+
+Excel:
+=EFFECT(APR,m)
+
+---------------------------------------------------
+9. NET PRESENT VALUE (NPV)
+---------------------------------------------------
+
+NPV = Σ[CF/(1+r)^t]
+
+Excel:
+=NPV(rate, cashflows)
+
+---------------------------------------------------
+10. EMI FORMULA
+---------------------------------------------------
+
+EMI = P×r×(1+r)^n / [(1+r)^n -1]
+
+---------------------------------------------------
+11. REAL RETURN
+---------------------------------------------------
+
+Real Return = [(1+Nominal)/(1+Inflation)] -1
+
+---------------------------------------------------
+12. CAGR
+---------------------------------------------------
+
+CAGR = (FV/PV)^(1/n)-1
+
+---------------------------------------------------
+13. FUTURE VALUE OF SIP
+---------------------------------------------------
+
+FV = PMT[((1+r)^n -1)/r]
+
+---------------------------------------------------
+14. PAYBACK PERIOD
+---------------------------------------------------
+
+Payback = Initial Investment / Annual Cash Flow
+
+---------------------------------------------------
+15. PROFITABILITY INDEX
+---------------------------------------------------
+
+PI = PV of Future Cash Flows / Initial Investment
+
+---------------------------------------------------
+COMMON FINANCE MISTAKES
+---------------------------------------------------
+
+- Mixing monthly and annual rates
+- Ignoring compounding frequency
+- Forgetting annuity due timing
+- Using APR instead of EAR
+- Wrong sign convention
+- Ignoring inflation
 """
 
+    st.text_area(
+        "TVM Formula Reference",
+        formulas,
+        height=700
+    )
+
     st.download_button(
-        label="Download Formula Sheet",
+        label="Download Formula Cheat Sheet",
         data=formulas,
-        file_name="TVM_Formulas.txt"
+        file_name="TVM_Formula_Cheat_Sheet.txt"
     )
 
 # =========================================================
