@@ -883,6 +883,354 @@ Years = {n}
                 )
 
 # =========================================================
+# INFLATION MODULE
+# =========================================================
+
+elif menu == "Inflation Impact Simulator":
+
+    st.header("📉 Inflation Impact Simulator")
+
+    st.markdown("""
+Understand how inflation reduces purchasing power over time.
+""")
+
+    current_money = st.number_input(
+        "Current Amount",
+        value=1000000.0
+    )
+
+    inflation = st.slider(
+        "Inflation Rate (%)",
+        1.0,
+        15.0,
+        6.0
+    )
+
+    years = st.slider(
+        "Years",
+        1,
+        40,
+        20
+    )
+
+    future_value = current_money / ((1 + inflation/100) ** years)
+
+    st.success(
+        f"Future Purchasing Power = ₹{future_value:,.2f}"
+    )
+
+    st.warning(
+        "Inflation silently reduces wealth over time."
+    )
+
+# =========================================================
+# EXCEL FORMULA TRAINER
+# =========================================================
+
+elif menu == "Excel Formula Trainer":
+
+    st.header("📊 Excel Formula Trainer")
+
+    st.markdown("""
+Practice Excel finance formulas.
+""")
+
+    st.subheader("Problem")
+
+    st.markdown("""
+Find present value:
+
+- Future Value = ₹5,00,000
+- Rate = 10%
+- Years = 5
+""")
+
+    user_formula = st.text_input(
+        "Enter Excel Formula"
+    )
+
+    if st.button("Validate Formula"):
+
+        if "PV" in user_formula.upper():
+            st.success("Correct Excel function selected.")
+        else:
+            st.error("Try using the PV() function.")
+
+    st.code("=PV(10%,5,0,-500000)", language="excel")
+
+# =========================================================
+# LOAN AMORTIZATION SCHEDULE
+# =========================================================
+
+elif menu == "Loan Amortization":
+
+    st.header("🏦 Loan Amortization Schedule")
+
+    principal = st.number_input(
+        "Loan Amount",
+        value=1000000.0
+    )
+
+    annual_rate = st.slider(
+        "Interest Rate (%)",
+        1.0,
+        20.0,
+        8.0
+    )
+
+    years = st.slider(
+        "Loan Tenure (Years)",
+        1,
+        30,
+        10
+    )
+
+    r = annual_rate / 100 / 12
+    n = years * 12
+
+    emi = principal * r * ((1+r)**n) / (((1+r)**n)-1)
+
+    balance = principal
+
+    schedule = []
+
+    for month in range(1, n+1):
+
+        interest = balance * r
+        principal_paid = emi - interest
+        balance -= principal_paid
+
+        schedule.append([
+            month,
+            emi,
+            principal_paid,
+            interest,
+            max(balance,0)
+        ])
+
+    df = pd.DataFrame(
+        schedule,
+        columns=[
+            "Month",
+            "EMI",
+            "Principal",
+            "Interest",
+            "Balance"
+        ]
+    )
+
+    st.success(f"Monthly EMI = ₹{emi:,.2f}")
+
+    st.dataframe(df.head(24))
+
+    st.info(
+        "Early EMI payments contain mostly interest."
+    )
+
+# =========================================================
+# STEP-BY-STEP SOLVER
+# =========================================================
+
+elif menu == "Step-by-Step Solver":
+
+    st.header("🧠 Step-by-Step Finance Solver")
+
+    st.markdown("""
+Future Value Problem:
+
+- Present Value = ₹1,00,000
+- Rate = 10%
+- Years = 5
+""")
+
+    st.write("Step 1: Identify formula")
+    st.latex(r"FV = PV(1+r)^n")
+
+    st.write("Step 2: Substitute values")
+    st.latex(r"FV = 100000(1.10)^5")
+
+    st.write("Step 3: Calculate")
+
+    answer = 100000 * ((1.10)**5)
+
+    st.success(f"Answer = ₹{answer:,.2f}")
+
+# =========================================================
+# BEHAVIORAL FINANCE SIMULATOR
+# =========================================================
+
+elif menu == "Behavioral Finance":
+
+    st.header("🧠 Behavioral Finance Simulator")
+
+    st.markdown("""
+Understand emotional financial decision-making.
+""")
+
+    choice = st.radio(
+        "You receive ₹1 lakh bonus. What do you do?",
+        [
+            "Buy Luxury Phone",
+            "Invest in SIP",
+            "Travel Vacation"
+        ]
+    )
+
+    if choice == "Invest in SIP":
+
+        future = 100000 * ((1.12)**20)
+
+        st.success(
+            f"Potential Future Wealth = ₹{future:,.2f}"
+        )
+
+    else:
+
+        st.warning(
+            "Short-term pleasure may reduce long-term wealth creation."
+        )
+
+# =========================================================
+# DOWNLOAD FORMULA SHEET
+# =========================================================
+
+elif menu == "Formula Cheat Sheet":
+
+    st.header("📘 TVM Formula Cheat Sheet")
+
+    formulas = """
+Future Value: FV = PV(1+r)^n
+
+Present Value: PV = FV/(1+r)^n
+
+Annuity: PV = C[(1-(1+r)^-n)/r]
+
+Perpetuity: PV = C/r
+
+Growing Perpetuity: PV = C1/(r-g)
+
+EAR: (1+APR/m)^m -1
+"""
+
+    st.download_button(
+        label="Download Formula Sheet",
+        data=formulas,
+        file_name="TVM_Formulas.txt"
+    )
+
+# =========================================================
+# ADVANCED QUIZ BANK
+# =========================================================
+
+elif menu == "Advanced Quiz Bank":
+
+    st.header("📝 Advanced Quiz Bank")
+
+    level = st.selectbox(
+        "Difficulty",
+        ["Beginner","Intermediate","Advanced"]
+    )
+
+    if level == "Advanced":
+
+        st.markdown("""
+A startup generates:
+
+Year 1 = ₹1 lakh
+Year 2 = ₹3 lakh
+Year 3 = ₹5 lakh
+Discount Rate = 15%
+Initial Investment = ₹4 lakh
+
+Find NPV.
+""")
+
+        answer = st.number_input("Your Answer")
+
+        correct = (
+            -400000
+            + 100000/(1.15)
+            + 300000/(1.15**2)
+            + 500000/(1.15**3)
+        )
+
+        if st.button("Evaluate Quiz"):
+
+            if abs(answer-correct) < 100:
+                st.success("Excellent!")
+            else:
+                st.error(
+                    f"Correct Answer = ₹{correct:,.2f}"
+                )
+
+# =========================================================
+# PROGRESS TRACKER
+# =========================================================
+
+elif menu == "Progress Tracker":
+
+    st.header("📈 Student Progress Tracker")
+
+    completed = st.slider(
+        "Modules Completed",
+        0,
+        20,
+        8
+    )
+
+    score = st.slider(
+        "Average Quiz Score",
+        0,
+        100,
+        72
+    )
+
+    st.metric("Completion", f"{completed}/20")
+    st.metric("Average Score", f"{score}%")
+
+    st.progress(completed/20)
+
+    if score > 80:
+        st.success("Excellent Progress")
+    else:
+        st.warning("Practice more advanced problems")
+
+# =========================================================
+# CASE-BASED LEARNING
+# =========================================================
+
+elif menu == "Case-Based Learning":
+
+    st.header("📚 Financial Life Case Study")
+
+    st.markdown("""
+Arjun is 25 years old.
+
+He is deciding between:
+
+- buying a car,
+- starting SIP investments,
+- taking education loan,
+- saving for retirement.
+
+What should he prioritize?
+""")
+
+    option = st.radio(
+        "Best Long-Term Decision",
+        [
+            "Luxury Consumption",
+            "Early Investing",
+            "High Credit Card Spending"
+        ]
+    )
+
+    if option == "Early Investing":
+        st.success(
+            "Correct. Early investing benefits from compounding."
+        )
+
+# =========================================================
 # COMMON STUDENT MISTAKES
 # =========================================================
 
