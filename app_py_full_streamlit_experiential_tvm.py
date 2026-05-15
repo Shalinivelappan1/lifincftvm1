@@ -79,6 +79,15 @@ menu = st.sidebar.radio(
         "Gamification",
         "AI Hint System",
         "Quiz Engine",
+        "Inflation Impact Simulator",
+        "Excel Formula Trainer",
+        "Loan Amortization",
+        "Step-by-Step Solver",
+        "Behavioral Finance",
+        "Formula Cheat Sheet",
+        "Advanced Quiz Bank",
+        "Progress Tracker",
+        "Case-Based Learning",
         "Common Student Mistakes"
     ]
 )
@@ -1245,7 +1254,11 @@ elif menu == "Common Student Mistakes":
             "Ignoring payment timing",
             "Using APR instead of EAR",
             "Wrong sign convention",
-            "Ignoring inflation"
+            "Ignoring inflation",
+            "Ignoring compounding frequency",
+            "Using annual rate with monthly cash flows",
+            "Using monthly rate with yearly cash flows",
+            "Confusing quarterly, monthly and half-yearly compounding"
         ],
         "Explanation": [
             "Convert percentage to decimal",
@@ -1253,7 +1266,11 @@ elif menu == "Common Student Mistakes":
             "Beginning vs end matters",
             "EAR gives actual cost",
             "Initial investment usually negative",
-            "Real purchasing power changes"
+            "Real purchasing power changes",
+            "Monthly, quarterly and annual compounding produce different results",
+            "Monthly cash flows require monthly interest rates",
+            "Annual cash flows require annual discount rates",
+            "Compounding frequency changes effective returns and loan costs"
         ]
     })
 
